@@ -8,6 +8,10 @@ Delete HTML comments
 ```
 <!--(.*?)-->
 ```
+Delete PHP comments
+```
+/\*(.|\n)*?\*/
+```
 
 Sublime Text Best Plugins
 - Package Control
@@ -15,3 +19,6 @@ Sublime Text Best Plugins
 - color highlight
 - AdvancedNewFile
 - SidebarEnhancements
+
+In case you do not know how to preview .html file in github
+https://htmlpreview.github.io/?[url file]
