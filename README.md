@@ -23,5 +23,9 @@ Sublime Text Best Plugins
 In case you do not know how to preview .html file in github
 https://htmlpreview.github.io/?[url file]
 
-Self update composer
+Self update composer in Ubuntu
 1. ```which composer``` //check where installed composer
+2. ```php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"``` //download ```composer-setup.php``` file in current working directory
+3. ```php composer-setup.php``` //create ```composer.phar``` in current working directory
+4. ```sudo mv composer.phar``` //to replace file composer
+5. ```sudo composer self-update``` //to update
