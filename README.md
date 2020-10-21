@@ -22,3 +22,6 @@ Sublime Text Best Plugins
 
 In case you do not know how to preview .html file in github
 https://htmlpreview.github.io/?[url file]
+
+Self update composer
+1. ```which composer``` //check where installed composer
