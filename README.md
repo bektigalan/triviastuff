@@ -12,6 +12,10 @@ Delete PHP comments
 ```
 /\*(.|\n)*?\*/
 ```
+Delete all spaces expect inside of string
+```
+(""[^""\\]*(?:\\.[^""\\]*)*"")|\s+
+```
 
 Sublime Text Best Plugins
 - Package Control
