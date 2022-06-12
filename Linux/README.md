@@ -43,5 +43,10 @@ curl --insecure -vvI https://[IP] 2>&1 | awk 'BEGIN { cert=0 } /^\* SSL connecti
 ## How to delete junk files from linux
 
 ```
-find {{PATH}} -name "index.html.*{{PATTERN}}" -delete
+find <PATH> -name "index.html.*{{PATTERN}}" -delete
+```
+
+## How to monitor files changes in certain folder
+```
+watch --differences -n 1 ls -l <PATH>
 ```
