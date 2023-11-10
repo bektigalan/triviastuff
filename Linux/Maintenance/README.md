@@ -73,5 +73,5 @@
 10. **Memeriksa Informasi Storage Direktori:**
     
     ```bash
-    sudo du -h -s /var/log
+    sudo du -h -s /var/www/html
     ```
