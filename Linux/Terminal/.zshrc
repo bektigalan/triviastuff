@@ -7,7 +7,7 @@ fi
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# Updates: Disabled as requested (speed optimization)
+# Updates: Disabled as requested
 zstyle ':omz:update' mode disabled
 DISABLE_UPDATE_PROMPT="true"
 DISABLE_AUTO_TITLE="true"
@@ -18,15 +18,14 @@ plugins=(
   fzf
   git
   podman
-  z
   sudo
   extract
   web-search
   copypath
   zsh-autosuggestions
-  fast-syntax-highlighting
-  #zsh-syntax-highlighting # MUST BE LAST
+  fast-syntax-highlighting # Must be last
 )
+# Note: 'z' plugin removed in favor of zoxide (configured below)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -36,31 +35,74 @@ export LANG=en_US.UTF-8
 # History Optimization
 HISTSIZE=10000
 SAVEHIST=10000
-setopt HIST_IGNORE_SPACE      # Don't record commands starting with space (secrets)
+setopt HIST_IGNORE_SPACE      # Don't record commands starting with space
 setopt HIST_IGNORE_ALL_DUPS   # Remove older duplicates
-setopt SHARE_HISTORY          # Share history between tabs immediately
-setopt INC_APPEND_HISTORY     # Append to history file immediately, not when shell exits
+setopt SHARE_HISTORY          # Share history immediately
+setopt INC_APPEND_HISTORY     # Append immediately
 
 # Case insensitive matching
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
 # --- ALIASES & TOOLS ---
 
-# EZA / EXA (Modern ls replacement)
+# 1. ZOXIDE (Better 'cd')
+# Replaces the 'z' plugin. "cd" now remembers where you go.
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init zsh)"
+  alias cd="z"
+fi
+
+# 2. BAT (Better 'cat')
+# Syntax highlighting for file reading
+if command -v bat &> /dev/null; then
+  alias cat='bat --style=plain' # simple output
+  alias catp='bat'              # pretty output with line numbers
+elif command -v batcat &> /dev/null; then
+  alias cat='batcat --style=plain'
+  alias catp='batcat'
+fi
+
+# 3. EZA (Better 'ls')
 if command -v eza &> /dev/null; then
   alias ls='eza --icons --group-directories-first'
   alias ll='eza -l --icons --group-directories-first --git'
   alias la='eza -la --icons --group-directories-first --git'
   alias tree='eza --tree --icons'
-elif command -v exa &> /dev/null; then
-  alias ls='exa --icons --group-directories-first'
-  alias ll='exa -l --icons --group-directories-first --git'
-  alias la='exa -la --icons --group-directories-first --git'
-  alias tree='exa --tree --icons'
 fi
 
+# 4. PODMAN TOOLS
+# "Nuclear" cleanup for Podman (removes unused containers/images/volumes)
+alias pclean='podman system prune -a --volumes'
+# Prune only dangling images
+alias pprune='podman image prune'
+
+# 5. UTILITIES
+# Kill process on specific port (Usage: killport 3000)
+function killport() {
+  if [ -z "$1" ]; then
+    echo "Usage: killport <port_number>"
+    return 1
+  fi
+  local pid=$(lsof -ti tcp:$1)
+  if [ -z "$pid" ]; then
+    echo "No process found on port $1"
+  else
+    echo "Killing process $pid on port $1..."
+    kill -9 $pid
+  fi
+}
+
+# --- KEYBINDINGS ---
+# Fix Ctrl+Left/Right arrow navigation
+bindkey '^[[1;5C' forward-word
+bindkey '^[[1;5D' backward-word
+bindkey '^H' backward-kill-word
+# Autosuggest accept (Ctrl+Space is standard, or just Right Arrow)
+bindkey '^ ' autosuggest-accept
+
+# --- RUNTIME CONFIG ---
+
 # NVM (Node Version Manager) - LAZY LOAD
-# Only loads NVM when you run a node command. Speeds up shell start by ~0.5s.
 export NVM_DIR="$HOME/.nvm"
 nvm_commands=(nvm node npm npx pnpm yarn)
 function $nvm_commands {
@@ -75,5 +117,3 @@ function $nvm_commands {
 
 # Powerlevel10k config
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-bindkey '^ ' autosuggest-accept
